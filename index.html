@@ -26,7 +26,6 @@
             padding-bottom: 40px;
         }
 
-        /* HEADER & SEARCH */
         header {
             padding: 16px;
             background: rgba(11, 14, 20, 0.95);
@@ -79,7 +78,6 @@
             cursor: pointer;
         }
 
-        /* CATEGORÍAS */
         .categories {
             display: flex;
             gap: 8px;
@@ -98,7 +96,6 @@
             border: 1px solid #2d3748;
         }
 
-        /* GRID DE CÓMICS FIX */
         .container {
             padding: 16px;
         }
@@ -171,7 +168,6 @@
             overflow: hidden;
         }
 
-        /* LECTOR VISTA */
         #reader-view {
             display: none;
             position: fixed;
@@ -218,7 +214,6 @@
             font-size: 0.85rem;
         }
 
-        /* LOADER */
         .loader {
             text-align: center;
             padding: 40px;
@@ -252,7 +247,6 @@
         </div>
     </div>
 
-    <!-- VISTA LECTOR -->
     <div id="reader-view">
         <div class="reader-header">
             <span id="reader-title" style="font-weight:600; font-size:0.9rem;">Leyendo Cómic</span>
@@ -262,8 +256,7 @@
     </div>
 
     <script>
-        // CAMBIA ESTA URL POR LA DE TU BACKEND EN RENDER
-        const RENDER_URL = "https://TU-APP-EN-RENDER.onrender.com";
+        const RENDER_URL = "https://literate-octo-palm-tree-07j5.onrender.com";
 
         async function cargarDestacados() {
             fetchComics(`${RENDER_URL}/api/destacados`);
@@ -284,7 +277,7 @@
 
         async function fetchComics(url) {
             const grid = document.getElementById("gridComics");
-            grid.innerHTML = '<div class="loader">Cargando resultados...</div>';
+            grid.innerHTML = '<div class="loader">Cargando resultados... (Servidor despertando)</div>';
             
             try {
                 const res = await fetch(url);
@@ -313,7 +306,7 @@
                     grid.appendChild(card);
                 });
             } catch (e) {
-                grid.innerHTML = '<div class="loader">Error al conectar con el servidor.</div>';
+                grid.innerHTML = '<div class="loader">Error al conectar con el servidor. Si estuvo inactivo, recarga en 30 segundos.</div>';
             }
         }
 
@@ -322,7 +315,7 @@
             const pagesContainer = document.getElementById("readerPages");
             document.getElementById("reader-title").innerText = titulo;
             
-            pagesContainer.innerHTML = '<div class="loader" style="color:#fff">Cargando páginas...</div>';
+            pagesContainer.innerHTML = '<div class="loader" style="color:#fff">Cargando páginas del cómic...</div>';
             reader.style.display = "block";
 
             try {
@@ -352,7 +345,6 @@
             document.getElementById("readerPages").innerHTML = "";
         }
 
-        // Cargar al inicio
         window.onload = cargarDestacados;
     </script>
 </body>
