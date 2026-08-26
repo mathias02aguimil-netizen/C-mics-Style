@@ -293,7 +293,6 @@
         <button class="cat-btn" onclick="buscarCategoria('Superman')">🦸 Superman</button>
     </div>
 
-    <!-- MIS NOTICIAS Y PENDIENTES PUBLICADOS -->
     <div class="container" id="seccion-notas" style="display:none;">
         <h2 class="section-title">📌 Mis Noticias & Pendientes</h2>
         <div id="gridNotas" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
@@ -428,7 +427,6 @@
             document.getElementById("readerPages").innerHTML = "";
         }
 
-        /* LÓGICA DEL PANEL ADMIN */
         function abrirAdmin() {
             if (!ADMIN_KEY) {
                 const pass = prompt("Introduce tu clave secreta de Admin:");
