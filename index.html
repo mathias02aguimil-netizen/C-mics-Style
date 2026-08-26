@@ -6,39 +6,38 @@
   <title>ComicVerse HQ</title>
   <style>
     :root {
-      --bg: #0a0a0c;
-      --card-bg: #141419;
+      --bg: #0d0e12;
+      --card-bg: #16181f;
       --accent: #e50914;
       --text: #ffffff;
-      --subtext: #a0a0ab;
+      --subtext: #9a9ab0;
     }
     
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; }
     
     header { 
-      background: rgba(20, 20, 25, 0.9); 
+      background: rgba(18, 20, 26, 0.95); 
       backdrop-filter: blur(10px);
       padding: 16px; 
       text-align: center; 
-      border-bottom: 1px solid #22222b; 
+      border-bottom: 1px solid #232633; 
       position: sticky; 
       top: 0; 
       z-index: 10; 
     }
-    header h1 { font-size: 1.4rem; color: var(--accent); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+    header h1 { font-size: 1.4rem; color: var(--accent); font-weight: 900; letter-spacing: 2px; }
 
-    .search-box { padding: 16px; max-width: 600px; margin: 0 auto; display: flex; gap: 10px; }
+    .search-box { padding: 16px; max-width: 600px; margin: 0 auto; display: flex; gap: 8px; }
     .search-box input { 
       flex: 1; 
-      padding: 14px 18px; 
-      border-radius: 12px; 
-      border: 1px solid #2a2a35; 
-      background: #141419; 
+      padding: 14px 16px; 
+      border-radius: 10px; 
+      border: 1px solid #282c3d; 
+      background: #14161d; 
       color: #fff; 
       outline: none; 
-      font-size: 0.95rem;
-      transition: border-color 0.2s;
+      font-size: 1rem;
     }
     .search-box input:focus { border-color: var(--accent); }
     .search-box button { 
@@ -46,59 +45,55 @@
       color: #fff; 
       border: none; 
       padding: 14px 20px; 
-      border-radius: 12px; 
+      border-radius: 10px; 
       font-weight: 700; 
       cursor: pointer; 
-      box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
     }
 
-    .status-msg { text-align: center; color: var(--subtext); margin: 15px 0; font-size: 0.9rem; font-weight: 500; }
+    .section-title { font-size: 1.1rem; font-weight: 800; margin: 15px 20px 5px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Grid de cómics */
+    /* Grid de Cómics con Portadas */
     .grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-      gap: 16px; 
-      padding: 16px; 
+      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); 
+      gap: 15px; 
+      padding: 15px; 
       max-width: 1200px; 
       margin: 0 auto; 
     }
     .card { 
       background: var(--card-bg); 
-      border-radius: 12px; 
+      border-radius: 10px; 
       overflow: hidden; 
-      border: 1px solid #22222b; 
+      border: 1px solid #232633; 
       cursor: pointer; 
-      transition: transform 0.2s, box-shadow 0.2s; 
       display: flex; 
-      flex-direction: column; 
+      flex-direction: column;
     }
-    .card:active { transform: scale(0.96); }
-    .card-img-wrapper { position: relative; width: 100%; height: 210px; background: #1a1a22; overflow: hidden; }
-    .card img { width: 100%; height: 100%; object-fit: cover; }
-    .card-info { padding: 12px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-    .card .title { font-size: 0.85rem; font-weight: 700; line-height: 1.3; color: #eee; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-img-container { width: 100%; height: 200px; background: #202330; overflow: hidden; position: relative; }
+    .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-info { padding: 10px; }
+    .card .title { font-size: 0.85rem; font-weight: 700; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* Visor de Lectura Continuo */
-    #visor { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow-y: auto; display: none; }
+    #visor { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050507; z-index: 100; overflow-y: auto; display: none; }
     .top-bar { 
       position: fixed; 
       top: 0; left: 0; right: 0; 
       background: rgba(10, 10, 12, 0.95); 
-      backdrop-filter: blur(8px);
       padding: 12px 16px; 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
       z-index: 101; 
-      border-bottom: 1px solid #1a1a22; 
+      border-bottom: 1px solid #222; 
     }
-    .top-bar span { font-size: 0.9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; color: #fff; }
-    .btn-cerrar { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+    .top-bar span { font-size: 0.9rem; font-weight: 700; color: #fff; max-width: 75%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-cerrar { background: var(--accent); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; }
     
-    .paginas-container { padding-top: 60px; display: flex; flex-direction: column; align-items: center; background: #000; }
-    .paginas-container img { width: 100%; max-width: 850px; height: auto; display: block; border-bottom: 1px solid #111; }
-    #visor-loading { text-align: center; padding: 120px 20px; color: var(--subtext); font-size: 1rem; }
+    .paginas-container { padding-top: 55px; display: flex; flex-direction: column; align-items: center; }
+    .paginas-container img { width: 100%; max-width: 850px; height: auto; display: block; border-bottom: 2px solid #111; }
+    #visor-loading { text-align: center; padding: 120px 20px; color: var(--subtext); }
   </style>
 </head>
 <body>
@@ -108,74 +103,94 @@
   </header>
 
   <div class="search-box">
-    <input type="text" id="input-busqueda" placeholder="Buscar cómic o personaje...">
+    <input type="text" id="input-busqueda" placeholder="Buscar título o superhéroe...">
     <button onclick="ejecutarBusqueda()">Buscar</button>
   </div>
 
-  <div id="status" class="status-msg">Ingresa un nombre para explorar la biblioteca</div>
+  <div class="section-title" id="titulo-seccion">🔥 RECOMENDADOS DE HOY</div>
 
   <main class="grid" id="catalogo"></main>
 
-  <!-- Visor de Lectura Completa -->
+  <!-- Visor de Lectura Completo -->
   <div id="visor">
     <div class="top-bar">
-      <span id="titulo-comic">Cargando lectura...</span>
+      <span id="titulo-comic">Cargando...</span>
       <button class="btn-cerrar" onclick="cerrarVisor()">✖ Cerrar</button>
     </div>
-    <div id="visor-loading">⏳ Obteniendo páginas del cómic...</div>
+    <div id="visor-loading">⏳ Obteniendo todas las páginas del capítulo...</div>
     <div class="paginas-container" id="contenedor-paginas"></div>
   </div>
 
   <script>
     const SERVIDOR = "https://literate-octo-palm-tree-07j5.onrender.com";
 
+    // Cargar cómics recomendados automáticamente al abrir la app
+    window.addEventListener('DOMContentLoaded', cargarDestacados);
+
     document.getElementById('input-busqueda').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') ejecutarBusqueda();
     });
 
+    async function cargarDestacados() {
+      const catalogo = document.getElementById('catalogo');
+      catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Cargando biblioteca inicial...</div>";
+
+      try {
+        const res = await fetch(`${SERVIDOR}/api/destacados`);
+        const resultados = await res.json();
+        renderizarCards(resultados);
+      } catch (e) {
+        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>No se pudieron cargar los cómics iniciales. Usa el buscador.</div>";
+      }
+    }
+
     async function ejecutarBusqueda() {
       const query = document.getElementById('input-busqueda').value.trim();
-      const status = document.getElementById('status');
       const catalogo = document.getElementById('catalogo');
+      const tituloSeccion = document.getElementById('titulo-seccion');
 
       if (!query) return;
 
-      status.innerText = "🔎 Conectando con la base de datos...";
-      catalogo.innerHTML = "";
+      tituloSeccion.innerText = `🔍 RESULTADOS DE: ${query.toUpperCase()}`;
+      catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Buscando cómics...</div>";
 
       try {
         const res = await fetch(`${SERVIDOR}/api/buscar?query=${encodeURIComponent(query)}`);
         const resultados = await res.json();
-
-        if (resultados.length === 0) {
-          status.innerText = "No se encontraron cómics disponibles con ese nombre.";
-          return;
-        }
-
-        status.innerText = `Catálogo listo: ${resultados.length} resultados disponibles`;
-
-        resultados.forEach(item => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          
-          const imgUrl = item.portada.startsWith('http') ? item.portada : `${SERVIDOR}${item.portada}`;
-          
-          card.innerHTML = `
-            <div class="card-img-wrapper">
-              <img src="${imgUrl}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/200x300?text=Comic'">
-            </div>
-            <div class="card-info">
-              <div class="title">${item.titulo}</div>
-            </div>
-          `;
-          
-          card.onclick = () => abrirCapitulo(item.link, item.titulo);
-          catalogo.appendChild(card);
-        });
-
+        renderizarCards(resultados);
       } catch (e) {
-        status.innerText = " Error al conectar con el servidor central.";
+        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Error al conectar con el servidor.</div>";
       }
+    }
+
+    function renderizarCards(lista) {
+      const catalogo = document.getElementById('catalogo');
+      catalogo.innerHTML = "";
+
+      if (!lista || lista.length === 0) {
+        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>No se encontraron títulos.</div>";
+        return;
+      }
+
+      lista.forEach(item => {
+        if (!item.portada) return;
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const imgUrl = item.portada.startsWith('http') ? item.portada : `${SERVIDOR}${item.portada}`;
+        
+        card.innerHTML = `
+          <div class="card-img-container">
+            <img src="${imgUrl}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/200x300?text=Comic'">
+          </div>
+          <div class="card-info">
+            <div class="title">${item.titulo}</div>
+          </div>
+        `;
+        
+        card.onclick = () => abrirCapitulo(item.link, item.titulo);
+        catalogo.appendChild(card);
+      });
     }
 
     async function abrirCapitulo(urlCapitulo, titulo) {
@@ -192,7 +207,7 @@
         document.getElementById('visor-loading').style.display = 'none';
 
         if (!data.paginas || data.paginas.length === 0) {
-          contenedor.innerHTML = '<div style="padding: 60px 20px; text-align: center; color: #888;">Este tomo no cuenta con páginas disponibles temporalmente.</div>';
+          contenedor.innerHTML = '<div style="padding: 60px 20px; text-align: center; color: #888;">No se encontraron las páginas de este capítulo.</div>';
           return;
         }
 
@@ -202,7 +217,7 @@
         });
 
       } catch (e) {
-        document.getElementById('visor-loading').innerText = "Error al procesar el archivo del cómic.";
+        document.getElementById('visor-loading').innerText = "Error al cargar las páginas del capítulo.";
       }
     }
 
