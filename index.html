@@ -23,7 +23,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 40px;
+            padding-bottom: 60px;
         }
 
         header {
@@ -53,7 +53,7 @@
             gap: 8px;
         }
 
-        input {
+        input, select, textarea {
             flex: 1;
             padding: 12px 16px;
             border-radius: 8px;
@@ -64,7 +64,7 @@
             outline: none;
         }
 
-        input:focus {
+        input:focus, textarea:focus {
             border-color: var(--accent);
         }
 
@@ -168,6 +168,7 @@
             overflow: hidden;
         }
 
+        /* LECTOR MODAL */
         #reader-view {
             display: none;
             position: fixed;
@@ -220,6 +221,58 @@
             color: var(--text-sub);
             grid-column: 1 / -1;
         }
+
+        /* BOTÓN FLOTANTE PANEL ADMIN */
+        .admin-fab {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            background: #151922;
+            border: 1px solid #ff2a5f;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 90;
+        }
+
+        /* MODAL PANEL ADMIN */
+        #admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.85);
+            z-index: 300;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .admin-box {
+            background: #151922;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #2a3140;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .admin-item {
+            background: #0b0e14;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #2a3140;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -227,7 +280,7 @@
     <header>
         <div class="logo">⚡ ComicVerse HQ</div>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar cómic (ej. Spider-Man)...">
+            <input type="text" id="searchInput" placeholder="Buscar cómic en Marmota...">
             <button onclick="ejecutarBusqueda()">Buscar</button>
         </div>
     </header>
@@ -240,13 +293,20 @@
         <button class="cat-btn" onclick="buscarCategoria('Superman')">🦸 Superman</button>
     </div>
 
+    <!-- MIS NOTICIAS Y PENDIENTES PUBLICADOS -->
+    <div class="container" id="seccion-notas" style="display:none;">
+        <h2 class="section-title">📌 Mis Noticias & Pendientes</h2>
+        <div id="gridNotas" style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;"></div>
+    </div>
+
     <div class="container">
         <h2 class="section-title" id="tituloSeccion">🔥 Cómics Destacados</h2>
         <div class="grid-comics" id="gridComics">
-            <div class="loader">Cargando cómics...</div>
+            <div class="loader">Cargando cómics de Marmota...</div>
         </div>
     </div>
 
+    <!-- LECTOR -->
     <div id="reader-view">
         <div class="reader-header">
             <span id="reader-title" style="font-weight:600; font-size:0.9rem;">Leyendo Cómic</span>
@@ -255,11 +315,34 @@
         <div class="reader-pages" id="readerPages"></div>
     </div>
 
+    <!-- BOTÓN ADMIN Y MODAL PRIVADO -->
+    <button class="admin-fab" onclick="abrirAdmin()">🔐 Panel Admin</button>
+
+    <div id="admin-modal">
+        <div class="admin-box">
+            <h3 style="color:#ff2a5f;">Panel Exclusivo Admin</h3>
+            <select id="admin-tipo">
+                <option value="pendiente">📝 Cómic Pendiente por Leer</option>
+                <option value="noticia">📢 Noticia / Publicación</option>
+            </select>
+            <input type="text" id="admin-titulo" placeholder="Título...">
+            <textarea id="admin-contenido" rows="3" placeholder="Detalles / Comentarios..."></textarea>
+            <button onclick="guardarNotaAdmin()">Publicar</button>
+            
+            <h4 style="margin-top:10px;">Mis Notas Guardadas:</h4>
+            <div id="admin-lista-notas"></div>
+            
+            <button onclick="cerrarAdmin()" style="background:#2a3140; margin-top:10px;">Cerrar Panel</button>
+        </div>
+    </div>
+
     <script>
         const RENDER_URL = "https://literate-octo-palm-tree-07j5.onrender.com";
+        let ADMIN_KEY = "";
 
         async function cargarDestacados() {
             fetchComics(`${RENDER_URL}/api/destacados`);
+            cargarNotasPublicas();
         }
 
         function ejecutarBusqueda() {
@@ -277,7 +360,7 @@
 
         async function fetchComics(url) {
             const grid = document.getElementById("gridComics");
-            grid.innerHTML = '<div class="loader">Cargando resultados... (Servidor despertando)</div>';
+            grid.innerHTML = '<div class="loader">Cargando resultados...</div>';
             
             try {
                 const res = await fetch(url);
@@ -306,7 +389,7 @@
                     grid.appendChild(card);
                 });
             } catch (e) {
-                grid.innerHTML = '<div class="loader">Error al conectar con el servidor. Si estuvo inactivo, recarga en 30 segundos.</div>';
+                grid.innerHTML = '<div class="loader">Error al conectar con el servidor.</div>';
             }
         }
 
@@ -343,6 +426,103 @@
         function cerrarLector() {
             document.getElementById("reader-view").style.display = "none";
             document.getElementById("readerPages").innerHTML = "";
+        }
+
+        /* LÓGICA DEL PANEL ADMIN */
+        function abrirAdmin() {
+            if (!ADMIN_KEY) {
+                const pass = prompt("Introduce tu clave secreta de Admin:");
+                if (!pass) return;
+                ADMIN_KEY = pass;
+            }
+            document.getElementById("admin-modal").style.display = "block";
+            renderListaAdmin();
+        }
+
+        function cerrarAdmin() {
+            document.getElementById("admin-modal").style.display = "none";
+        }
+
+        async function guardarNotaAdmin() {
+            const tipo = document.getElementById("admin-tipo").value;
+            const titulo = document.getElementById("admin-titulo").value;
+            const contenido = document.getElementById("admin-contenido").value;
+
+            if (!titulo) return alert("Escribe un título");
+
+            try {
+                const res = await fetch(`${RENDER_URL}/api/admin/notas`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-password": ADMIN_KEY
+                    },
+                    body: JSON.stringify({ tipo, titulo, contenido })
+                });
+
+                if (res.status === 401) {
+                    ADMIN_KEY = "";
+                    return alert("Clave incorrecta!");
+                }
+
+                document.getElementById("admin-titulo").value = "";
+                document.getElementById("admin-contenido").value = "";
+                renderListaAdmin();
+                cargarNotasPublicas();
+            } catch (e) {
+                alert("Error al guardar");
+            }
+        }
+
+        async function cargarNotasPublicas() {
+            try {
+                const res = await fetch(`${RENDER_URL}/api/admin/notas`);
+                const data = await res.json();
+                const container = document.getElementById("seccion-notas");
+                const grid = document.getElementById("gridNotas");
+
+                if (!data || data.length === 0) {
+                    container.style.display = "none";
+                    return;
+                }
+
+                container.style.display = "block";
+                grid.innerHTML = data.map(n => `
+                    <div style="background:#151922; padding:12px; border-radius:8px; border-left:4px solid #ff2a5f;">
+                        <span style="font-size:0.75rem; color:#ff2a5f; font-weight:bold;">${n.tipo.toUpperCase()}</span>
+                        <h4 style="margin:4px 0;">${n.titulo}</h4>
+                        <p style="font-size:0.85rem; color:#9aa0a6;">${n.contenido}</p>
+                    </div>
+                `).join("");
+            } catch (e) {}
+        }
+
+        async function renderListaAdmin() {
+            try {
+                const res = await fetch(`${RENDER_URL}/api/admin/notas`);
+                const data = await res.json();
+                const lista = document.getElementById("admin-lista-notas");
+                
+                lista.innerHTML = data.map(n => `
+                    <div class="admin-item">
+                        <div>
+                            <strong>[${n.tipo}]</strong> ${n.titulo}
+                        </div>
+                        <button onclick="eliminarNotaAdmin(${n.id})" style="background:#e53e3e; padding:4px 8px; font-size:0.75rem;">X</button>
+                    </div>
+                `).join("");
+            } catch (e) {}
+        }
+
+        async function eliminarNotaAdmin(id) {
+            try {
+                await fetch(`${RENDER_URL}/api/admin/notas/${id}`, {
+                    method: "DELETE",
+                    headers: { "x-password": ADMIN_KEY }
+                });
+                renderListaAdmin();
+                cargarNotasPublicas();
+            } catch (e) {}
         }
 
         window.onload = cargarDestacados;
