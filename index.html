@@ -3,115 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cómics Reader</title>
+  <title>Biblioteca de Cómics</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0f0f11; color: #ffffff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: #0e0e11; color: #fff; min-height: 100vh; }
+    
+    header { background: #18181c; padding: 15px; text-align: center; border-bottom: 2px solid #e50914; position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.3rem; color: #e50914; font-weight: 800; letter-spacing: 1px; }
 
-    /* Cabecera estilo App */
-    header { position: sticky; top: 0; z-index: 10; background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(10px); padding: 15px; border-bottom: 1px solid #222; text-align: center; }
-    header h1 { font-size: 1.2rem; color: #e50914; font-weight: 800; letter-spacing: 1px; }
+    .search-container { padding: 15px; display: flex; gap: 8px; max-width: 500px; margin: 0 auto; }
+    .search-container input { flex: 1; padding: 12px 14px; border-radius: 8px; border: 1px solid #2a2a32; background: #16161a; color: #fff; outline: none; font-size: 1rem; }
+    .search-container input:focus { border-color: #e50914; }
+    .search-container button { background: #e50914; color: #fff; border: none; padding: 12px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-    /* Buscador */
-    .search-box { padding: 12px 15px; }
-    .search-box input { width: 100%; padding: 10px 15px; background: #1a1a1e; border: 1px solid #2a2a30; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none; }
+    .status-msg { text-align: center; color: #aaa; margin: 20px; font-size: 0.9rem; }
 
-    /* Grilla de Cómics */
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; padding: 15px; }
-    .card { background: #1a1a1e; border-radius: 8px; overflow: hidden; cursor: pointer; border: 1px solid #282830; }
-    .card img { width: 100%; height: 160px; object-fit: cover; display: block; }
-    .card .info { padding: 8px; }
-    .card .info h3 { font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #eee; }
-    .card .info p { font-size: 0.7rem; color: #888; margin-top: 2px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 15px; max-width: 1200px; margin: 0 auto; }
+    .card { background: #18181c; border-radius: 8px; overflow: hidden; border: 1px solid #26262e; cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; }
+    .card:active { transform: scale(0.97); }
+    .card img { width: 100%; height: 190px; object-fit: cover; background: #222; }
+    .card-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; flex: 1; justify-content: space-between; }
+    .card .title { font-size: 0.85rem; font-weight: 600; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card .badge { font-size: 0.65rem; background: #e50914; padding: 2px 6px; border-radius: 4px; align-self: flex-start; text-transform: uppercase; font-weight: bold; }
 
-    /* Visor Modo Cascada (Scroll Vertical) */
+    /* Visor de lectura continuo */
     #visor { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow-y: auto; display: none; }
-    .visor-bar { position: fixed; top: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 101; border-bottom: 1px solid #333; }
-    .visor-bar h2 { font-size: 0.95rem; font-weight: 600; }
-    .btn-close { background: #e50914; border: none; color: #fff; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-
-    .paginas-container { padding-top: 55px; padding-bottom: 30px; display: flex; flex-direction: column; align-items: center; }
-    .paginas-container img { width: 100%; max-width: 800px; display: block; margin: 0 auto; height: auto; }
+    .top-bar { position: fixed; top: 0; left: 0; right: 0; background: rgba(10,10,12,0.95); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 101; border-bottom: 1px solid #222; }
+    .top-bar span { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+    .btn-cerrar { background: #e50914; color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    
+    .paginas-container { padding-top: 55px; display: flex; flex-direction: column; align-items: center; }
+    .paginas-container img { width: 100%; max-width: 800px; height: auto; display: block; }
+    #visor-loading { text-align: center; padding: 100px 20px; color: #aaa; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Marmota Reader</h1>
+    <h1>💥 CÓMICS HUB</h1>
   </header>
 
-  <div class="search-box">
-    <input type="text" id="busqueda" placeholder="Buscar cómic..." oninput="filtrarComics()">
+  <div class="search-container">
+    <input type="text" id="input-busqueda" placeholder="Buscar cómics (ej. Spider-Man)...">
+    <button onclick="ejecutarBusqueda()">Buscar</button>
   </div>
 
-  <main class="grid" id="catalogo">
-    <!-- Se genera automáticamente desde el JSON -->
-  </main>
+  <div id="status" class="status-msg">Escribe un título para empezar a buscar</div>
 
-  <!-- Lector Vertical -->
+  <main class="grid" id="catalogo"></main>
+
+  <!-- Visor de Lectura -->
   <div id="visor">
-    <div class="visor-bar">
-      <h2 id="visor-titulo">Leyendo Cómic</h2>
-      <button class="btn-close" onclick="cerrarVisor()">Cerrar ✖</button>
+    <div class="top-bar">
+      <span id="titulo-comic">Cargando...</span>
+      <button class="btn-cerrar" onclick="cerrarVisor()">✖ Cerrar</button>
     </div>
-    <div class="paginas-container" id="paginas-lista"></div>
+    <div id="visor-loading">Cargando páginas del cómic...</div>
+    <div class="paginas-container" id="contenedor-paginas"></div>
   </div>
 
   <script>
-    let todosLosComics = [];
+    // URL oficial de tu backend en Render
+    const SERVIDOR = "https://literate-octo-palm-tree-07j5.onrender.com";
 
-    // Cargar la lista de cómics desde el archivo JSON
-    async function cargarCatalogo() {
+    // Detectar la tecla Enter en el cuadro de búsqueda
+    document.getElementById('input-busqueda').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') ejecutarBusqueda();
+    });
+
+    async function ejecutarBusqueda() {
+      const query = document.getElementById('input-busqueda').value.trim();
+      const status = document.getElementById('status');
+      const catalogo = document.getElementById('catalogo');
+
+      if (!query) return;
+
+      status.innerText = "🔍 Espiando servidores... (esto puede tomar unos segundos)";
+      catalogo.innerHTML = "";
+
       try {
-        const res = await fetch('comics.json');
-        todosLosComics = await res.json();
-        mostrarComics(todosLosComics);
+        const res = await fetch(`${SERVIDOR}/api/buscar?query=${encodeURIComponent(query)}`);
+        const resultados = await res.json();
+
+        if (resultados.length === 0) {
+          status.innerText = "No se encontraron cómics con ese título. Intenta con otra palabra.";
+          return;
+        }
+
+        status.innerText = `Se encontraron ${resultados.length} resultados:`;
+
+        resultados.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          
+          const imgUrl = item.portada.startsWith('http') ? item.portada : `${SERVIDOR}${item.portada}`;
+          
+          card.innerHTML = `
+            <img src="${imgUrl}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/150x225?text=Sin+Portada'">
+            <div class="card-info">
+              <div class="title">${item.titulo}</div>
+              <span class="badge">${item.fuente}</span>
+            </div>
+          `;
+          
+          card.onclick = () => abrirCapitulo(item.link, item.titulo);
+          catalogo.appendChild(card);
+        });
+
       } catch (e) {
-        console.error("Error al cargar comics.json", e);
+        status.innerText = " Error de conexión con el servidor espía. Intenta de nuevo en un momento.";
       }
     }
 
-    function mostrarComics(lista) {
-      const contenedor = document.getElementById('catalogo');
-      contenedor.innerHTML = '';
-      lista.forEach((comic, idx) => {
-        contenedor.innerHTML += `
-          <div class="card" onclick="abrirComic(${idx})">
-            <img src="${comic.portada}" alt="Portada">
-            <div class="info">
-              <h3>${comic.titulo}</h3>
-              <p>${comic.capitulo || 'Tomo 1'}</p>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function filtrarComics() {
-      const texto = document.getElementById('busqueda').value.toLowerCase();
-      const filtrados = todosLosComics.filter(c => c.titulo.toLowerCase().includes(texto));
-      mostrarComics(filtrados);
-    }
-
-    function abrirComic(index) {
-      const comic = todosLosComics[index];
-      document.getElementById('visor-titulo').innerText = comic.titulo;
-      const listaImg = document.getElementById('paginas-lista');
-      listaImg.innerHTML = '';
-
-      comic.paginas.forEach(url => {
-        listaImg.innerHTML += `<img src="${url}" loading="lazy" alt="Página">`;
-      });
-
+    async function abrirCapitulo(urlCapitulo, titulo) {
       document.getElementById('visor').style.display = 'block';
-      document.getElementById('visor').scrollTop = 0;
+      document.getElementById('visor-loading').style.display = 'block';
+      document.getElementById('titulo-comic').innerText = titulo;
+      const contenedor = document.getElementById('contenedor-paginas');
+      contenedor.innerHTML = '';
+
+      try {
+        const res = await fetch(`${SERVIDOR}/api/capitulo?url_capitulo=${encodeURIComponent(urlCapitulo)}`);
+        const data = await res.json();
+        
+        document.getElementById('visor-loading').style.display = 'none';
+
+        if (!data.paginas || data.paginas.length === 0) {
+          contenedor.innerHTML = '<div style="padding: 40px; text-align: center; color: #888;">No se pudieron extraer las páginas de este capítulo.</div>';
+          return;
+        }
+
+        data.paginas.forEach(imgUrl => {
+          const fullImgUrl = imgUrl.startsWith('http') ? imgUrl : `${SERVIDOR}${imgUrl}`;
+          contenedor.innerHTML += `<img src="${fullImgUrl}" loading="lazy">`;
+        });
+
+      } catch (e) {
+        document.getElementById('visor-loading').innerText = "Error al cargar las páginas del capítulo.";
+      }
     }
 
     function cerrarVisor() {
       document.getElementById('visor').style.display = 'none';
+      document.getElementById('contenedor-paginas').innerHTML = '';
     }
-
-    window.onload = cargarCatalogo;
   </script>
 </body>
 </html>
