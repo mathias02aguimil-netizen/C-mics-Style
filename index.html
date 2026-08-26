@@ -125,7 +125,7 @@
       <span id="titulo-comic">Cargando...</span>
       <button class="btn-cerrar" onclick="cerrarVisor()">✖ Cerrar</button>
     </div>
-    <div id="visor-loading">⏳ Obteniendo páginas reales del capítulo...</div>
+    <div id="visor-loading">⏳ Cargando páginas del capítulo...</div>
     <div class="paginas-container" id="contenedor-paginas"></div>
   </div>
 
@@ -140,14 +140,14 @@
 
     async function cargarDestacados() {
       const catalogo = document.getElementById('catalogo');
-      catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Cargando biblioteca inicial...</div>";
+      catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Cargando cómics...</div>";
 
       try {
         const res = await fetch(`${SERVIDOR}/api/destacados`);
         const resultados = await res.json();
         renderizarCards(resultados);
       } catch (e) {
-        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>No se pudieron cargar los cómics iniciales. Usa el buscador.</div>";
+        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Servidor conectando... Realiza una búsqueda arriba.</div>";
       }
     }
 
@@ -175,7 +175,7 @@
       catalogo.innerHTML = "";
 
       if (!lista || lista.length === 0) {
-        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>No se encontraron títulos.</div>";
+        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>No se encontraron resultados para esta búsqueda.</div>";
         return;
       }
 
@@ -190,7 +190,7 @@
             <img src="${imgUrl}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/200x300?text=Comic'">
           </div>
           <div class="card-info">
-            <div class="title">${item.titulo || 'Cómic sin título'}</div>
+            <div class="title">${item.titulo || 'Cómic'}</div>
           </div>
         `;
         
@@ -202,7 +202,7 @@
     async function abrirCapitulo(urlCapitulo, titulo) {
       document.getElementById('visor').style.display = 'block';
       document.getElementById('visor-loading').style.display = 'block';
-      document.getElementById('titulo-comic').innerText = titulo || "Lectura de Cómic";
+      document.getElementById('titulo-comic').innerText = titulo || "Cómic";
       const contenedor = document.getElementById('contenedor-paginas');
       contenedor.innerHTML = '';
 
@@ -213,7 +213,7 @@
         document.getElementById('visor-loading').style.display = 'none';
 
         if (!data.paginas || data.paginas.length === 0) {
-          contenedor.innerHTML = '<div style="padding: 60px 20px; text-align: center; color: #888;">No se encontraron las páginas de este capítulo.</div>';
+          contenedor.innerHTML = '<div style="padding: 60px 20px; text-align: center; color: #888;">No se pudieron extraer las páginas de este enlace.</div>';
           return;
         }
 
@@ -223,7 +223,7 @@
         });
 
       } catch (e) {
-        document.getElementById('visor-loading').innerText = "Error al cargar las páginas del capítulo.";
+        document.getElementById('visor-loading').innerText = "Error al cargar las imágenes.";
       }
     }
 
