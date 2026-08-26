@@ -6,22 +6,21 @@
   <title>ComicVerse HQ</title>
   <style>
     :root {
-      --bg: #0d0e12;
-      --card-bg: #16181f;
+      --bg: #0a0a0c;
+      --card-bg: #141419;
       --accent: #e50914;
       --text: #ffffff;
-      --subtext: #9a9ab0;
+      --subtext: #8e8e93;
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; }
     
     header { 
-      background: rgba(18, 20, 26, 0.95); 
-      backdrop-filter: blur(10px);
+      background: #141419; 
       padding: 16px; 
       text-align: center; 
-      border-bottom: 1px solid #232633; 
+      border-bottom: 1px solid #22222b; 
       position: sticky; 
       top: 0; 
       z-index: 10; 
@@ -52,10 +51,10 @@
 
     .section-title { font-size: 1.1rem; font-weight: 800; margin: 15px 20px 5px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Grid de Cómics con Portadas */
+    /* Grid de Cómics */
     .grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); 
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
       gap: 15px; 
       padding: 15px; 
       max-width: 1200px; 
@@ -70,13 +69,22 @@
       display: flex; 
       flex-direction: column;
     }
-    .card-img-container { width: 100%; height: 200px; background: #202330; overflow: hidden; position: relative; }
+    .card-img-container { width: 100%; height: 210px; background: #1c1d24; overflow: hidden; position: relative; }
     .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .card-info { padding: 10px; }
-    .card .title { font-size: 0.85rem; font-weight: 700; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-info { padding: 12px; background: #141419; min-height: 55px; }
+    .card .title { 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      color: #ffffff !important; 
+      line-height: 1.3; 
+      display: -webkit-box; 
+      -webkit-line-clamp: 2; 
+      -webkit-box-orient: vertical; 
+      overflow: hidden; 
+    }
 
-    /* Visor de Lectura Continuo */
-    #visor { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050507; z-index: 100; overflow-y: auto; display: none; }
+    /* Visor de Lectura */
+    #visor { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow-y: auto; display: none; }
     .top-bar { 
       position: fixed; 
       top: 0; left: 0; right: 0; 
@@ -117,14 +125,13 @@
       <span id="titulo-comic">Cargando...</span>
       <button class="btn-cerrar" onclick="cerrarVisor()">✖ Cerrar</button>
     </div>
-    <div id="visor-loading">⏳ Obteniendo todas las páginas del capítulo...</div>
+    <div id="visor-loading">⏳ Obteniendo páginas reales del capítulo...</div>
     <div class="paginas-container" id="contenedor-paginas"></div>
   </div>
 
   <script>
     const SERVIDOR = "https://literate-octo-palm-tree-07j5.onrender.com";
 
-    // Cargar cómics recomendados automáticamente al abrir la app
     window.addEventListener('DOMContentLoaded', cargarDestacados);
 
     document.getElementById('input-busqueda').addEventListener('keypress', function (e) {
@@ -173,7 +180,6 @@
       }
 
       lista.forEach(item => {
-        if (!item.portada) return;
         const card = document.createElement('div');
         card.className = 'card';
         
@@ -184,7 +190,7 @@
             <img src="${imgUrl}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/200x300?text=Comic'">
           </div>
           <div class="card-info">
-            <div class="title">${item.titulo}</div>
+            <div class="title">${item.titulo || 'Cómic sin título'}</div>
           </div>
         `;
         
@@ -196,7 +202,7 @@
     async function abrirCapitulo(urlCapitulo, titulo) {
       document.getElementById('visor').style.display = 'block';
       document.getElementById('visor-loading').style.display = 'block';
-      document.getElementById('titulo-comic').innerText = titulo;
+      document.getElementById('titulo-comic').innerText = titulo || "Lectura de Cómic";
       const contenedor = document.getElementById('contenedor-paginas');
       contenedor.innerHTML = '';
 
