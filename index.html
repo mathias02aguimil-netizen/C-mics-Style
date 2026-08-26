@@ -6,230 +6,321 @@
   <title>ComicVerse HQ</title>
   <style>
     :root {
-      --bg: #0a0a0c;
-      --card-bg: #141419;
-      --accent: #e50914;
-      --text: #ffffff;
-      --subtext: #8e8e93;
-    }
-    
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; }
-    
-    header { 
-      background: #141419; 
-      padding: 16px; 
-      text-align: center; 
-      border-bottom: 1px solid #22222b; 
-      position: sticky; 
-      top: 0; 
-      z-index: 10; 
-    }
-    header h1 { font-size: 1.4rem; color: var(--accent); font-weight: 900; letter-spacing: 2px; }
-
-    .search-box { padding: 16px; max-width: 600px; margin: 0 auto; display: flex; gap: 8px; }
-    .search-box input { 
-      flex: 1; 
-      padding: 14px 16px; 
-      border-radius: 10px; 
-      border: 1px solid #282c3d; 
-      background: #14161d; 
-      color: #fff; 
-      outline: none; 
-      font-size: 1rem;
-    }
-    .search-box input:focus { border-color: var(--accent); }
-    .search-box button { 
-      background: var(--accent); 
-      color: #fff; 
-      border: none; 
-      padding: 14px 20px; 
-      border-radius: 10px; 
-      font-weight: 700; 
-      cursor: pointer; 
+      --bg-color: #090a0f;
+      --card-bg: #13151f;
+      --accent: #ff2a2a;
+      --accent-hover: #ff4d4d;
+      --text-main: #f0f2f5;
+      --text-muted: #8b92a5;
+      --border: #1e2235;
     }
 
-    .section-title { font-size: 1.1rem; font-weight: 800; margin: 15px 20px 5px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; }
 
-    /* Grid de Cómics */
-    .grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-      gap: 15px; 
-      padding: 15px; 
-      max-width: 1200px; 
-      margin: 0 auto; 
+    header {
+      background: rgba(19, 21, 31, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .card { 
-      background: var(--card-bg); 
-      border-radius: 10px; 
-      overflow: hidden; 
-      border: 1px solid #232633; 
-      cursor: pointer; 
-      display: flex; 
+    header h1 { font-size: 1.25rem; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; }
+
+    .search-wrapper {
+      padding: 20px 16px 10px;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    .search-container {
+      display: flex;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: border-color 0.2s;
+    }
+    .search-container:focus-within { border-color: var(--accent); }
+    .search-container input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 14px 18px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .search-container button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0 22px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-container button:hover { background: var(--accent-hover); }
+
+    .section-header {
+      max-width: 1300px;
+      margin: 20px auto 10px;
+      padding: 0 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* Grid de Cómics Estilo Tarjeta Moderna */
+    .comic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      padding: 10px 20px 40px;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .comic-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
       flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .card-img-container { width: 100%; height: 210px; background: #1c1d24; overflow: hidden; position: relative; }
-    .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .card-info { padding: 12px; background: #141419; min-height: 55px; }
-    .card .title { 
-      font-size: 0.85rem; 
-      font-weight: 700; 
-      color: #ffffff !important; 
-      line-height: 1.3; 
-      display: -webkit-box; 
-      -webkit-line-clamp: 2; 
-      -webkit-box-orient: vertical; 
-      overflow: hidden; 
+    .comic-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      border-color: rgba(255, 42, 42, 0.4);
+    }
+    .comic-poster {
+      width: 100%;
+      height: 220px;
+      background: #0d0e14;
+      position: relative;
+      overflow: hidden;
+    }
+    .comic-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .comic-info {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .comic-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    /* Visor de Lectura */
-    #visor { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 100; overflow-y: auto; display: none; }
-    .top-bar { 
-      position: fixed; 
-      top: 0; left: 0; right: 0; 
-      background: rgba(10, 10, 12, 0.95); 
-      padding: 12px 16px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      z-index: 101; 
-      border-bottom: 1px solid #222; 
+    /* Visor de Lectura Inmersivo */
+    #reader-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000;
+      z-index: 100;
+      overflow-y: auto;
+      display: none;
     }
-    .top-bar span { font-size: 0.9rem; font-weight: 700; color: #fff; max-width: 75%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .btn-cerrar { background: var(--accent); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; }
-    
-    .paginas-container { padding-top: 55px; display: flex; flex-direction: column; align-items: center; }
-    .paginas-container img { width: 100%; max-width: 850px; height: auto; display: block; border-bottom: 2px solid #111; }
-    #visor-loading { text-align: center; padding: 120px 20px; color: var(--subtext); }
+    .reader-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(9, 10, 15, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 101;
+      border-bottom: 1px solid var(--border);
+    }
+    .reader-header span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 70%;
+    }
+    .close-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .reader-content {
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .reader-content img {
+      width: 100%;
+      max-width: 800px;
+      height: auto;
+      display: block;
+    }
+    .loading-state {
+      text-align: center;
+      padding: 100px 20px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>⚡ COMICVERSE HQ</h1>
+    <h1>⚡ ComicVerse HQ</h1>
   </header>
 
-  <div class="search-box">
-    <input type="text" id="input-busqueda" placeholder="Buscar título o superhéroe...">
-    <button onclick="ejecutarBusqueda()">Buscar</button>
+  <div class="search-wrapper">
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Escribe el nombre del cómic (Ej: Invincible, Batman)...">
+      <button onclick="ejecutarBusqueda()">Buscar</button>
+    </div>
   </div>
 
-  <div class="section-title" id="titulo-seccion">🔥 RECOMENDADOS DE HOY</div>
+  <div class="section-header" id="sectionTitle">🔥 CÓMICS DESTACADOS</div>
 
-  <main class="grid" id="catalogo"></main>
+  <main class="comic-grid" id="comicGrid"></main>
 
-  <!-- Visor de Lectura Completo -->
-  <div id="visor">
-    <div class="top-bar">
-      <span id="titulo-comic">Cargando...</span>
-      <button class="btn-cerrar" onclick="cerrarVisor()">✖ Cerrar</button>
+  <!-- Visor -->
+  <div id="reader-modal">
+    <div class="reader-header">
+      <span id="readerTitle">Cargando...</span>
+      <button class="close-btn" onclick="cerrarVisor()">Cerrar</button>
     </div>
-    <div id="visor-loading">⏳ Cargando páginas del capítulo...</div>
-    <div class="paginas-container" id="contenedor-paginas"></div>
+    <div class="loading-state" id="readerLoading">Cargando páginas del capítulo...</div>
+    <div class="reader-content" id="readerContainer"></div>
   </div>
 
   <script>
-    const SERVIDOR = "https://literate-octo-palm-tree-07j5.onrender.com";
+    const BACKEND_URL = "https://literate-octo-palm-tree-07j5.onrender.com";
 
     window.addEventListener('DOMContentLoaded', cargarDestacados);
 
-    document.getElementById('input-busqueda').addEventListener('keypress', function (e) {
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') ejecutarBusqueda();
     });
 
     async function cargarDestacados() {
-      const catalogo = document.getElementById('catalogo');
-      catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Cargando cómics...</div>";
+      const grid = document.getElementById('comicGrid');
+      grid.innerHTML = '<div class="loading-state" style="grid-column: 1/-1;">Cargando catálogo inicial...</div>';
 
       try {
-        const res = await fetch(`${SERVIDOR}/api/destacados`);
-        const resultados = await res.json();
-        renderizarCards(resultados);
+        const res = await fetch(`${BACKEND_URL}/api/destacados`);
+        const data = await res.json();
+        renderizarComics(data);
       } catch (e) {
-        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Servidor conectando... Realiza una búsqueda arriba.</div>";
+        grid.innerHTML = '<div class="loading-state" style="grid-column: 1/-1;">Usa la barra de búsqueda para encontrar cómics.</div>';
       }
     }
 
     async function ejecutarBusqueda() {
-      const query = document.getElementById('input-busqueda').value.trim();
-      const catalogo = document.getElementById('catalogo');
-      const tituloSeccion = document.getElementById('titulo-seccion');
+      const query = document.getElementById('searchInput').value.trim();
+      const grid = document.getElementById('comicGrid');
+      const sectionTitle = document.getElementById('sectionTitle');
 
       if (!query) return;
 
-      tituloSeccion.innerText = `🔍 RESULTADOS DE: ${query.toUpperCase()}`;
-      catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Buscando cómics...</div>";
+      sectionTitle.innerText = `🔍 RESULTADOS PARA: "${query.toUpperCase()}"`;
+      grid.innerHTML = '<div class="loading-state" style="grid-column: 1/-1;">Buscando en los servidores...</div>';
 
       try {
-        const res = await fetch(`${SERVIDOR}/api/buscar?query=${encodeURIComponent(query)}`);
-        const resultados = await res.json();
-        renderizarCards(resultados);
+        const res = await fetch(`${BACKEND_URL}/api/buscar?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        renderizarComics(data);
       } catch (e) {
-        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>Error al conectar con el servidor.</div>";
+        grid.innerHTML = '<div class="loading-state" style="grid-column: 1/-1;">Error de conexión con el servidor backend.</div>';
       }
     }
 
-    function renderizarCards(lista) {
-      const catalogo = document.getElementById('catalogo');
-      catalogo.innerHTML = "";
+    function renderizarComics(lista) {
+      const grid = document.getElementById('comicGrid');
+      grid.innerHTML = "";
 
       if (!lista || lista.length === 0) {
-        catalogo.innerHTML = "<div style='grid-column: 1/-1; text-align: center; color: #888;'>No se encontraron resultados para esta búsqueda.</div>";
+        grid.innerHTML = '<div class="loading-state" style="grid-column: 1/-1;">No se encontraron cómics con ese nombre.</div>';
         return;
       }
 
       lista.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'comic-card';
         
-        const imgUrl = item.portada.startsWith('http') ? item.portada : `${SERVIDOR}${item.portada}`;
+        const imgUrl = item.portada.startsWith('http') ? item.portada : `${BACKEND_URL}${item.portada}`;
         
         card.innerHTML = `
-          <div class="card-img-container">
-            <img src="${imgUrl}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/200x300?text=Comic'">
+          <div class="comic-poster">
+            <img src="${imgUrl}" alt="${item.titulo}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=Sin+Imagen'">
           </div>
-          <div class="card-info">
-            <div class="title">${item.titulo || 'Cómic'}</div>
+          <div class="comic-info">
+            <div class="comic-title">${item.titulo}</div>
           </div>
         `;
         
         card.onclick = () => abrirCapitulo(item.link, item.titulo);
-        catalogo.appendChild(card);
+        grid.appendChild(card);
       });
     }
 
     async function abrirCapitulo(urlCapitulo, titulo) {
-      document.getElementById('visor').style.display = 'block';
-      document.getElementById('visor-loading').style.display = 'block';
-      document.getElementById('titulo-comic').innerText = titulo || "Cómic";
-      const contenedor = document.getElementById('contenedor-paginas');
-      contenedor.innerHTML = '';
+      document.getElementById('reader-modal').style.display = 'block';
+      document.getElementById('readerLoading').style.display = 'block';
+      document.getElementById('readerTitle').innerText = titulo;
+      const container = document.getElementById('readerContainer');
+      container.innerHTML = '';
 
       try {
-        const res = await fetch(`${SERVIDOR}/api/capitulo?url_capitulo=${encodeURIComponent(urlCapitulo)}`);
+        const res = await fetch(`${BACKEND_URL}/api/capitulo?url_capitulo=${encodeURIComponent(urlCapitulo)}`);
         const data = await res.json();
         
-        document.getElementById('visor-loading').style.display = 'none';
+        document.getElementById('readerLoading').style.display = 'none';
 
         if (!data.paginas || data.paginas.length === 0) {
-          contenedor.innerHTML = '<div style="padding: 60px 20px; text-align: center; color: #888;">No se pudieron extraer las páginas de este enlace.</div>';
+          container.innerHTML = '<div class="loading-state">No se pudieron extraer las páginas de este capítulo.</div>';
           return;
         }
 
         data.paginas.forEach(imgUrl => {
-          const fullImgUrl = imgUrl.startsWith('http') ? imgUrl : `${SERVIDOR}${imgUrl}`;
-          contenedor.innerHTML += `<img src="${fullImgUrl}" loading="lazy">`;
+          const fullImgUrl = imgUrl.startsWith('http') ? imgUrl : `${BACKEND_URL}${imgUrl}`;
+          container.innerHTML += `<img src="${fullImgUrl}" loading="lazy" onerror="this.remove()">`;
         });
 
       } catch (e) {
-        document.getElementById('visor-loading').innerText = "Error al cargar las imágenes.";
+        document.getElementById('readerLoading').innerText = "Error cargando las páginas.";
       }
     }
 
     function cerrarVisor() {
-      document.getElementById('visor').style.display = 'none';
-      document.getElementById('contenedor-paginas').innerHTML = '';
+      document.getElementById('reader-modal').style.display = 'none';
+      document.getElementById('readerContainer').innerHTML = '';
     }
   </script>
 </body>
